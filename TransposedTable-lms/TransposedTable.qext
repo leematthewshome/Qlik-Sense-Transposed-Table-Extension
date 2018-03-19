@@ -1,0 +1,9 @@
+{
+	"name" : "TransposedTable",
+	"description" : "Transposed Table. For structured financial reports.",
+	"icon" : "table",
+	"type" : "visualization",
+	"version": "1.0",
+	"preview" : "table",
+	"author": "Transpose logic by Michael Clemens, adapted by Lee Matthews"
+}
