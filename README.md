@@ -20,12 +20,12 @@ Report Level Configuration Settings
 5.	Hide decimals: To save you from having to format hide decimals for every single row you can set it globally here. This will cause each number to be  rounded. Row level formats will override this value for the specific row.
 6.	Add totals column: Check this box to create a totals column on the end of the report. Rows with a percentage in the text (ie. ratios) will not be totaled.
 
-Report Dimension Settings
--------------------------
+Dimension Level (ie. column) Settings
+--------------------------------------
 The report dimension will determine the number of columns. Only one dimension can be used at this stage. There are no other special dimensional settings.
 
-Row Level Configuration Settings
---------------------------------
+Measure Level (ie. Row) Settings
+---------------------------------
 1.	Indent Level: Select a value to indent the text. Each incremental number will indent the row text by another 10 pixels. This will help visually define sections in the report.
 2.	Bold Text: Tick this option on to display the text as Bold for this row.
 3.	Italic Text: Tick this option on to display the text as Italic for this row.
