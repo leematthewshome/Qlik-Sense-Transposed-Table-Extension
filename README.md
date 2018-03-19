@@ -7,3 +7,4 @@ There are already a couple of great extensions available on Branch.Qlik.Com whic
 
 This extension is not meant to be a replacement for other extensions that exist. Rather it is designed to complement them, as each approach has its benefits and in combination you will hopefully have all your financial reporting needs covered. 
 
+![Alt text](Extension.png?raw=true "Example config")
