@@ -5,7 +5,9 @@ Often there is a requirement for highly structured, financial type reports to be
 
 There are already a couple of great extensions available on Branch.Qlik.Com which can produce financial style reports. These solutions generally rely on the layout of the report being represented in the data model in some way. This extension is not meant to be a replacement for other extensions that exist. Rather it is designed to complement them, as each approach has its benefits and in combination you will hopefully have all your financial reporting needs covered. 
 
-Major credit for this extension goes to Michael Clemens who wrote the transposition logic. I merely added the table formatting logic. 
+Major credit for this extension goes to Michael Clemens who wrote the transposition logic. I merely added the table formatting logic.
+
+Youtube Demo: https://www.youtube.com/watch?v=f2EWvqAVr2M&t=2s
 
 ![Alt text](Extension.png?raw=true "Example config")
 
