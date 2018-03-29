@@ -190,8 +190,9 @@ define(["jquery"], function($) {
             var measureCount = this.backendApi.getMeasureInfos().length;
             var dimensionTitle = this.backendApi.getDimensionInfos()[0].qFallbackTitle;
             var totalColOn = layout.qTotalOn;
-            //totalColOn  = true;
 
+
+			//function to format numbers as comma separated
             var commaSeparate = function(totsTikr) {
                 if (totsTikr < 0) {
                     totsTikr = totsTikr * -1;
@@ -209,11 +210,15 @@ define(["jquery"], function($) {
                 }
             };
 			
-            //Lets ignore title of the dimension and just use the actual values
-			//---------------------------------------------------------------------
-            //var dimTitle = this.backendApi.getDimensionInfos()[0].qFallbackTitle;
+			//Function to round values to a given precision
+			var roundNum = function round(value, precision) {
+				var multiplier = Math.pow(10, precision || 0);
+				value = Math.round(value * multiplier) / multiplier;
+				return value.toFixed(precision);
+			};
+			
+			
 			var dimTitle = "";
-
             var innerArrayCntr = this.backendApi.getMeasureInfos().length + 1;
 
             //Build arrays of labels for first column of table
@@ -246,24 +251,33 @@ define(["jquery"], function($) {
 							//do nothing
 						}
 						//check for no format or Auto (Auto seems to be 14 hash character)
-						if(typeof(fmt)=='undefined' || fmt=='##############'){fmt=''}
-						
+						if(typeof(fmt)=='undefined' || fmt=='##############'){
+							fmt=''
+						}
+
 						//if no number returned then put a blank in the array
 						if(row[qscCellCnt].qNum=='NaN'){
 							cellValue = ""
+						}
+						//check for a calculated ratio column based on % in title and dont format those
+						else if (row[0].qText.indexOf('%') >= 0){
+							cellValue = roundNum(parseFloat(row[qscCellCnt].qText)*100, 1) 
+							cellValue = commaSeparate(cellValue) + '%'
 						}
 						//if a format is given then skip formatting
 						else if(fmt.length>0){
 							cellValue = row[qscCellCnt].qText
 						}
-						//apply the global formatting
+						//apply the global formatting based on chart config
 						else{
+							//rounding logic 
 							if (layout.hideDecimals==1){
-								cellValue = Math.round(parseFloat(row[qscCellCnt].qText))
+								cellValue = roundNum(parseFloat(row[qscCellCnt].qText), 0)
 							}
 							else{
 								cellValue = row[qscCellCnt].qText
 							}
+							//formatting logic 
 							if (layout.formatAll==1){
 								cellValue = commaSeparate(cellValue)
 							}
@@ -347,6 +361,7 @@ define(["jquery"], function($) {
 
                     //Make html table column
                     qscCellHtml.innerHTML = tempMasterArray[bldra][bldrb];
+					//alert(tempMasterArray[0][bldrb] + ":" + tempMasterArray[bldra][bldrb])
 					if(bldra==0){
 						if(bldrb==0){
 							qscCellHtml.className = "label"; 
