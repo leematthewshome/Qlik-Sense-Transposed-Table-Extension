@@ -31,3 +31,7 @@ Measure Level (ie. Row) Settings
 3.	Italic Text: Tick this option on to display the text as Italic for this row.
 4.	Background color: Set a background color for the row. Enter it as a hexadecimal value.
 
+
+Reports With Comparison Columns & Ratio Columns
+-----------------------------------------------
+The transposed table approach works very well when you wish to create a financial report that has columns created via a dimension, such as fiscal month or division. When you wish to have columns that each are a separate calculation, then you need to represent those calculations in the data model via a dimension. The extension comes with a simple example and a Word document that outlines how these sort of reports can be constructed.  
