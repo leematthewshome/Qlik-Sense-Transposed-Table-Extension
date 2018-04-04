@@ -365,7 +365,8 @@ define(["jquery"], function($) {
 					if(bldra==0){
 						if(bldrb==0){
 							qscCellHtml.className = "label"; 
-							qscCellHtml.style = "padding-left:5px";
+							//qscCellHtml.style = "padding-left:5px;";
+							qscCellHtml.style.paddingLeft = "5px";
 						}
 						else{
 							qscCellHtml.className = "thead"; 
@@ -377,10 +378,13 @@ define(["jquery"], function($) {
 							qscCellHtml.className = "label"; 
 							//changes made below for stupid IE11 compatibility
 							//qscCellHtml.style = "padding-left:" + parseInt(parseInt(layout.qHyperCube.qMeasureInfo[bldra-1].myOptions.indentLevel * 10) + parseInt(5)) + "px";
+							qscCellHtml.style.paddingRight = "3px";
 							qscCellHtml.style.paddingLeft = parseInt(parseInt(layout.qHyperCube.qMeasureInfo[bldra-1].myOptions.indentLevel * 10) + parseInt(5)) + "px";
 						}
 						else{
-							qscCellHtml.className = "value"; 							
+							qscCellHtml.className = "value"; 		
+							qscCellHtml.style.paddingRight = "2px";
+							qscCellHtml.style.paddingLeft = "5px";
 						}
 					}
                     qscRowHtml.appendChild(qscCellHtml); 
