@@ -8,7 +8,6 @@ define(["jquery"], function($) {
 		.thead {padding-top:10px; padding-bottom:10px; text-align:center; ;} \
 		.label {text-align:left; white-space:nowrap} \
 		.value {text-align:right; padding-right:5px; padding-top:1px; padding-bottom:1px;} \
-        /*table th{font-weight:bold;}table td,table th{padding:9px 10px;text-align:left;}@media only screen and (max-width: 767px) {table.responsive{margin-bottom:0;}.pinned{position:absolute;left:0;top:0;background:#fff;width:35%;overflow:hidden;overflow-x:scroll;border-right:1px solid #ccc;border-left:1px solid #ccc;}.pinned table{border-right:none;border-left:none;width:100%;}.pinned table th,.pinned table td{white-space:nowrap;}.pinned td:last-child{border-bottom:0;}div.table-wrapper{position:relative;margin-bottom:20px;overflow:hidden;border-right:1px solid #ccc;}div.table-wrapper div.scrollable table{margin-left:35%;}div.table-wrapper div.scrollable{overflow:scroll;overflow-y:hidden;}table.responsive td,table.responsive th{position:relative;white-space:nowrap;overflow:hidden;}table.responsive th:first-child,table.responsive td:first-child,table.responsive td:first-child,table.responsive.pinned td{display:none;}} */\
         ").appendTo("head");
     }
     return {
@@ -168,7 +167,9 @@ define(["jquery"], function($) {
         },
 
         paint: function($element, layout) {
-			console.log(layout)
+			//output contents of JSON returned by Qlik to the console for debugging
+			//console.log(layout)
+			
 			var stored = {};
             var currentTableQvid = layout.qInfo.qId;
             if ($("#qsc-pivot-table-body-" + currentTableQvid + "").length) {
@@ -307,7 +308,6 @@ define(["jquery"], function($) {
                         'overflow-x': 'visible'
                     });
                 }
-
             };
 
 			//Create a totals column for the transposed table
@@ -365,7 +365,8 @@ define(["jquery"], function($) {
 					if(bldra==0){
 						if(bldrb==0){
 							qscCellHtml.className = "label"; 
-							qscCellHtml.style = "padding-left:5px";
+							//qscCellHtml.style = "padding-left:5px;";
+							qscCellHtml.style.paddingLeft = "5px";
 						}
 						else{
 							qscCellHtml.className = "thead"; 
@@ -375,10 +376,15 @@ define(["jquery"], function($) {
 						//set indentation only for first column
 						if (bldrb==0){
 							qscCellHtml.className = "label"; 
-							qscCellHtml.style = "padding-left:" + parseInt(parseInt(layout.qHyperCube.qMeasureInfo[bldra-1].myOptions.indentLevel * 10) + parseInt(5)) + "px";
+							//changes made below for stupid IE11 compatibility
+							//qscCellHtml.style = "padding-left:" + parseInt(parseInt(layout.qHyperCube.qMeasureInfo[bldra-1].myOptions.indentLevel * 10) + parseInt(5)) + "px";
+							qscCellHtml.style.paddingRight = "3px";
+							qscCellHtml.style.paddingLeft = parseInt(parseInt(layout.qHyperCube.qMeasureInfo[bldra-1].myOptions.indentLevel * 10) + parseInt(5)) + "px";
 						}
 						else{
-							qscCellHtml.className = "value"; 							
+							qscCellHtml.className = "value"; 		
+							qscCellHtml.style.paddingRight = "2px";
+							qscCellHtml.style.paddingLeft = "5px";
 						}
 					}
                     qscRowHtml.appendChild(qscCellHtml); 
@@ -394,11 +400,14 @@ define(["jquery"], function($) {
 				//----------------------------------------------------------------------
 				if(bldra==0){
 					qscRowHtml.className = "thead"; 
-					qscRowHtml.style = "background-color:" + layout.headBackColor + "; font-weight:bold" + "; color:" + layout.headTextColor; 
+					//changes made below for stupid IE11 compatibility
+					//qscRowHtml.style = "background-color:" + layout.headBackColor + "; font-weight:bold" + "; color:" + layout.headTextColor; 
+					qscRowHtml.style.backgroundColor = layout.headBackColor 
+					qscRowHtml.style.color = layout.headTextColor
+					qscRowHtml.style.fontWeight = 'bold' 
 				}
 				else{
 					qscRowHtml.className = "qsc-tbl-row-" + bldra; 
-					indentLevel = layout.qHyperCube.qMeasureInfo[bldra-1].myOptions.indentLevel;
 					//set bold text or not 
 					if(layout.qHyperCube.qMeasureInfo[bldra-1].myOptions.showBold){
 						fontWeight = 'bold'
@@ -414,7 +423,11 @@ define(["jquery"], function($) {
 						fontStyle = 'normal'
 					}
 					rowColor = layout.qHyperCube.qMeasureInfo[bldra-1].myOptions.backColor;
-					qscRowHtml.style = "background-color:" + rowColor + "; font-weight:" + fontWeight + "; font-style:" + fontStyle; 
+					//changes made below for stupid IE11 compatibility
+					//qscRowHtml.style = "background-color:" + rowColor + "; font-weight:" + fontWeight + "; font-style:" + fontStyle; 
+					qscRowHtml.style.backgroundColor = rowColor 
+					qscRowHtml.style.fontWeight = fontWeight 
+					qscRowHtml.style.fontStyle = fontStyle 
 				}
 					
 				//alert(qscRowHtml.outerHTML)
@@ -429,20 +442,20 @@ define(["jquery"], function($) {
             $element.show();
             $('table').show();
 
+
             var suffix = " - Qlik Sense",
                 weAreInSense = document.title.indexOf(suffix, document.title.length - suffix.length) !== -1;
             if (weAreInSense) {
+                $element[0].style.overflowX = "scroll";
                 $element[0].style.overflowY = "scroll";
             } else {
                 stored.sizeTableWrapper();
                 $('body').on('resize', stored.sizeTableWrapper);
             }
 
+			console.log($element[0].innerHTML)
         }
-
-
-
+		
     };
-
-
+	
 });
