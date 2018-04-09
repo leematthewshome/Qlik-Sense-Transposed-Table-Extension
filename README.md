@@ -19,6 +19,7 @@ Report Level Configuration Settings
 4.	Format all values: To save you from having to format the number for every single row you can set the global format here. Row level formats will override  this value for the specific row.
 5.	Hide decimals: To save you from having to format hide decimals for every single row you can set it globally here. This will cause each number to be  rounded. Row level formats will override this value for the specific row.
 6.	Add totals column: Check this box to create a totals column on the end of the report. Rows with a percentage in the text (ie. ratios) will not be totaled.
+7. Show table borders: Hide or display the table borders.
 
 Dimension Level (ie. column) Settings
 --------------------------------------
