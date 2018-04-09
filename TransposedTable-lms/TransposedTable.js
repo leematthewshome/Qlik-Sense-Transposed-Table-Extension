@@ -3,11 +3,13 @@ define(["jquery"], function($) {
     var qscStyleCounter = 0;
     if (!qscPaintCounter) {
         $("<style>").html("/* Pivot/Transpose Table Embedded Styles */ \
-		table, td {border:1px solid silver;} \
 		tr {height:1.2em} \
 		.thead {padding-top:10px; padding-bottom:10px; text-align:center; ;} \
 		.label {text-align:left; white-space:nowrap} \
 		.value {text-align:right; padding-right:5px; padding-top:1px; padding-bottom:1px;} \
+		.thead_b {border:1px solid silver;padding-top:10px; padding-bottom:10px; text-align:center; ;} \
+		.label_b {border:1px solid silver;text-align:left; white-space:nowrap} \
+		.value_b {border:1px solid silver;text-align:right; padding-right:5px; padding-top:1px; padding-bottom:1px;} \
         ").appendTo("head");
     }
     return {
@@ -150,9 +152,15 @@ define(["jquery"], function($) {
 										tooltip: "Decimals hidden (rounded)"
 									}]
 								},					
+								showBorder: {
+									type: "boolean",
+									label: "Show table borders",
+									ref: "qBorderOn",
+									defaultValue: false
+								},
 								qTotals: {
 									type: "boolean",
-									label: "Add Totals Column?",
+									label: "Add Totals Column",
 									ref: "qTotalOn",
 									defaultValue: false
 								}
@@ -184,14 +192,20 @@ define(["jquery"], function($) {
             $('table').hide();
             $element.html('');
 
-            $element.html('<table id="qsc-table-' + currentTableQvid + '" class="qsc-pivot-table responsive"><tbody id="qsc-pivot-table-body-' + currentTableQvid + '"></tbody></table>');
+            $element.html('<table id="qsc-table-' + currentTableQvid + '" class="qsc-pivot-table responsive" ><tbody id="qsc-pivot-table-body-' + currentTableQvid + '"></tbody></table>');
             var pliableTable = document.getElementById("qsc-pivot-table-body-" + currentTableQvid + "");
             var transposeThisTable = layout.qTransposeTable;
             var tempMasterArray = []; 
             var measureCount = this.backendApi.getMeasureInfos().length;
             var dimensionTitle = this.backendApi.getDimensionInfos()[0].qFallbackTitle;
             var totalColOn = layout.qTotalOn;
-
+			//determine whether to display border styles
+			if (layout.qBorderOn){
+				border = '_b'
+			}
+			else{
+				border = ''
+			}
 
 			//function to format numbers as comma separated
             var commaSeparate = function(totsTikr) {
@@ -364,25 +378,25 @@ define(["jquery"], function($) {
 					//alert(tempMasterArray[0][bldrb] + ":" + tempMasterArray[bldra][bldrb])
 					if(bldra==0){
 						if(bldrb==0){
-							qscCellHtml.className = "label"; 
+							qscCellHtml.className = "label"+border; 
 							//qscCellHtml.style = "padding-left:5px;";
 							qscCellHtml.style.paddingLeft = "5px";
 						}
 						else{
-							qscCellHtml.className = "thead"; 
+							qscCellHtml.className = "thead"+border; 
 						}
 					} 
 					else {
 						//set indentation only for first column
 						if (bldrb==0){
-							qscCellHtml.className = "label"; 
+							qscCellHtml.className = "label"+border; 
 							//changes made below for stupid IE11 compatibility
 							//qscCellHtml.style = "padding-left:" + parseInt(parseInt(layout.qHyperCube.qMeasureInfo[bldra-1].myOptions.indentLevel * 10) + parseInt(5)) + "px";
 							qscCellHtml.style.paddingRight = "3px";
 							qscCellHtml.style.paddingLeft = parseInt(parseInt(layout.qHyperCube.qMeasureInfo[bldra-1].myOptions.indentLevel * 10) + parseInt(5)) + "px";
 						}
 						else{
-							qscCellHtml.className = "value"; 		
+							qscCellHtml.className = "value"+border; 		
 							qscCellHtml.style.paddingRight = "2px";
 							qscCellHtml.style.paddingLeft = "5px";
 						}
