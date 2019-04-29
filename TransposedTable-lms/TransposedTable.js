@@ -152,6 +152,20 @@ define(["jquery"], function($) {
 										tooltip: "Decimals hidden (rounded)"
 									}]
 								},					
+								posTextColor: {
+									type: "string",
+									ref: "posTextColor",
+									label: "Positive value color",
+									expression: "always",
+									defaultValue: "#333333"
+								},
+								negTextColor: {
+									type: "string",
+									ref: "negTextColor",
+									label: "Negative value color",
+									expression: "always",
+									defaultValue: "#333333"
+								},
 								showBorder: {
 									type: "boolean",
 									label: "Show table borders",
@@ -160,7 +174,7 @@ define(["jquery"], function($) {
 								},
 								qTotals: {
 									type: "boolean",
-									label: "Add Totals Column",
+									label: "Totals *Note: disabled in code*",
 									ref: "qTotalOn",
 									defaultValue: false
 								}
@@ -185,7 +199,7 @@ define(["jquery"], function($) {
                 var tempMasterArray = null; 						// []; //Master temp array
                 var measureCount = null; 							// this.backendApi.getMeasureInfos().length;
                 var dimensionTitle = null; 							// this.backendApi.getDimensionInfos()[0].qFallbackTitle;
-                var totalColOn = null; 								// layout.qTotalOn;
+                //var totalColOn = null; 							//Disabled as per Issue #8
                 $('body').off('resize', stored.sizeTableWrapper);
             }
             $element.hide();
@@ -198,7 +212,7 @@ define(["jquery"], function($) {
             var tempMasterArray = []; 
             var measureCount = this.backendApi.getMeasureInfos().length;
             var dimensionTitle = this.backendApi.getDimensionInfos()[0].qFallbackTitle;
-            var totalColOn = layout.qTotalOn;
+            //var totalColOn = layout.qTotalOn;         //Disabled as per Issue #8
 			//determine whether to display border styles
 			if (layout.qBorderOn){
 				border = '_b'
@@ -324,7 +338,8 @@ define(["jquery"], function($) {
                 }
             };
 
-			//Create a totals column for the transposed table
+            /*  Disabled as per Issue #8
+			//Create a totals column for the transposed table  
 			//----------------------------------------------------------------------------------------
             if (totalColOn) {
                 //go through each temp master array and summ values to produce a totals array of total values for each measure
@@ -361,6 +376,7 @@ define(["jquery"], function($) {
                     }
                 }
             }
+            */
 
             var makeHeader = false; //option to disable table header
 			
@@ -375,7 +391,6 @@ define(["jquery"], function($) {
 
                     //Make html table column
                     qscCellHtml.innerHTML = tempMasterArray[bldra][bldrb];
-					//alert(tempMasterArray[0][bldrb] + ":" + tempMasterArray[bldra][bldrb])
 					if(bldra==0){
 						if(bldrb==0){
 							qscCellHtml.className = "label"+border; 
@@ -387,7 +402,7 @@ define(["jquery"], function($) {
 						}
 					} 
 					else {
-						//set indentation only for first column
+ 						//set indentation only for first column
 						if (bldrb==0){
 							qscCellHtml.className = "label"+border; 
 							//changes made below for stupid IE11 compatibility
@@ -400,6 +415,11 @@ define(["jquery"], function($) {
 							qscCellHtml.style.paddingRight = "2px";
 							qscCellHtml.style.paddingLeft = "5px";
 						}
+                        //Issue #9 set font color
+                        qscCellHtml.style.color = layout.posTextColor;
+                        if(tempMasterArray[bldra][bldrb].substring(0, 1) == '(' || tempMasterArray[bldra][bldrb].substring(0, 1) == '-'){
+                            qscCellHtml.style.color = layout.negTextColor;
+                        }
 					}
                     qscRowHtml.appendChild(qscCellHtml); 
                 }
