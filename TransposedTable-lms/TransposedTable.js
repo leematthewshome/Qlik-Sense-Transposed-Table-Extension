@@ -38,7 +38,7 @@ define(["jquery"], function($) {
                 measures: {
                     uses: "measures",
                     min: 1,
-                    max: 35,
+                    max: 80,
 					items: {
 						indentLevel: {
 							type: "string",
