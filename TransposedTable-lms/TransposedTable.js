@@ -39,7 +39,7 @@ define(["jquery"], function($) {
                     uses: "measures",
                     min: 1,
                     max: 35,
-					items: {		
+					items: {
 						indentLevel: {
 							type: "string",
 							component: "dropdown",
@@ -67,7 +67,7 @@ define(["jquery"], function($) {
 								label: "4",
 								tooltip: "Four"
 							}]
-						},					
+						},
 						showBold: {
 							type: "boolean",
 							label: "Bold text",
@@ -91,7 +91,7 @@ define(["jquery"], function($) {
                 },
                 sorting: {
                     uses: "sorting"
-                },		
+                },
 				settings: {
 					uses: "settings",
 					items: {
@@ -135,7 +135,7 @@ define(["jquery"], function($) {
 										label: "Comma",
 										tooltip: "Comma format values"
 									}]
-								},					
+								},
 								hideDecimals: {
 									type: "string",
 									component: "dropdown",
@@ -151,7 +151,7 @@ define(["jquery"], function($) {
 										label: "Decimals rounded",
 										tooltip: "Decimals hidden (rounded)"
 									}]
-								},					
+								},
 								posTextColor: {
 									type: "string",
 									ref: "posTextColor",
@@ -191,15 +191,14 @@ define(["jquery"], function($) {
         paint: function($element, layout) {
 			//output contents of JSON returned by Qlik to the console for debugging
 			//console.log(layout)
-			
+
 			var stored = {};
             var currentTableQvid = layout.qInfo.qId;
             if ($("#qsc-pivot-table-body-" + currentTableQvid + "").length) {
-                var pliableTable = null; 							// document.getElementById("qsc-pivot-table-body-" + currentTableQvid + "");
-                var tempMasterArray = null; 						// []; //Master temp array
-                var measureCount = null; 							// this.backendApi.getMeasureInfos().length;
-                var dimensionTitle = null; 							// this.backendApi.getDimensionInfos()[0].qFallbackTitle;
-                //var totalColOn = null; 							//Disabled as per Issue #8
+                var pliableTable = null;
+                var tempMasterArray = null; //Master temp array
+                var measureCount = null;
+                var dimensionTitle = null;
                 $('body').off('resize', stored.sizeTableWrapper);
             }
             $element.hide();
@@ -209,10 +208,9 @@ define(["jquery"], function($) {
             $element.html('<table id="qsc-table-' + currentTableQvid + '" class="qsc-pivot-table responsive" ><tbody id="qsc-pivot-table-body-' + currentTableQvid + '"></tbody></table>');
             var pliableTable = document.getElementById("qsc-pivot-table-body-" + currentTableQvid + "");
             var transposeThisTable = layout.qTransposeTable;
-            var tempMasterArray = []; 
+            var tempMasterArray = [];
             var measureCount = this.backendApi.getMeasureInfos().length;
             var dimensionTitle = this.backendApi.getDimensionInfos()[0].qFallbackTitle;
-            //var totalColOn = layout.qTotalOn;         //Disabled as per Issue #8
 			//determine whether to display border styles
 			if (layout.qBorderOn){
 				border = '_b'
@@ -238,15 +236,15 @@ define(["jquery"], function($) {
                     return totsTikr;
                 }
             };
-			
+
 			//Function to round values to a given precision
 			var roundNum = function round(value, precision) {
 				var multiplier = Math.pow(10, precision || 0);
 				value = Math.round(value * multiplier) / multiplier;
 				return value.toFixed(precision);
 			};
-			
-			
+
+
 			var dimTitle = "";
             var innerArrayCntr = this.backendApi.getMeasureInfos().length + 1;
 
@@ -254,16 +252,16 @@ define(["jquery"], function($) {
 			//----------------------------------------------------------------------------------------------------------
             for (var addPlaceHolders = 0; addPlaceHolders < innerArrayCntr; addPlaceHolders++) {
                 tempMasterArray.push(new Array());
-				//Dimension Row  - use the configured value for first column header 
-				if (addPlaceHolders == 0) { 
+				//Dimension Row  - use the configured value for first column header
+				if (addPlaceHolders == 0) {
 					tempMasterArray[addPlaceHolders].push(layout.labelColHead);
-				} 
+				}
 				//Measure Row
-				else { 
+				else {
 					tempMasterArray[addPlaceHolders].push(this.backendApi.getMeasureInfos()[(addPlaceHolders - 1)].qFallbackTitle);
 				}
             }
-			
+
             //Build temp arrays, each array corresponds to one measure and will be used to make html table rows
 			//----------------------------------------------------------------------------------------------------------
             this.backendApi.eachDataRow(function(key, row) {
@@ -290,7 +288,7 @@ define(["jquery"], function($) {
 						}
 						//check for a calculated ratio column based on % in title and dont format those
 						else if (row[0].qText.indexOf('%') >= 0){
-							cellValue = roundNum(parseFloat(row[qscCellCnt].qText)*100, 1) 
+							cellValue = roundNum(parseFloat(row[qscCellCnt].qText)*100, 1)
 							cellValue = commaSeparate(cellValue) + '%'
 						}
 						//if a format is given then skip formatting
@@ -299,20 +297,20 @@ define(["jquery"], function($) {
 						}
 						//apply the global formatting based on chart config
 						else{
-							//rounding logic 
+							//rounding logic
 							if (layout.hideDecimals==1){
 								cellValue = roundNum(parseFloat(row[qscCellCnt].qText), 0)
 							}
 							else{
 								cellValue = row[qscCellCnt].qText
 							}
-							//formatting logic 
+							//formatting logic
 							if (layout.formatAll==1){
 								cellValue = commaSeparate(cellValue)
 							}
 						}
 						//push the final value into the array
-						tempMasterArray[qscCellCnt].push(cellValue); 
+						tempMasterArray[qscCellCnt].push(cellValue);
 					}
                 }
             });
@@ -338,80 +336,37 @@ define(["jquery"], function($) {
                 }
             };
 
-            /*  Disabled as per Issue #8
-			//Create a totals column for the transposed table  
-			//----------------------------------------------------------------------------------------
-            if (totalColOn) {
-                //go through each temp master array and summ values to produce a totals array of total values for each measure
-                for (var totsIter = (tempMasterArray.length), totsTikr = 0; totsTikr < totsIter; totsTikr++) { 
-                    sumItAllUp = 0; 
-					//get formatting for the expression so we skip summing ratios
-					try {
-						fmt = layout.qHyperCube.qMeasureInfo[totsTikr].qNumFormat.qFmt;
-					}
-					catch(err){
-						//do nothing
-					}
-					if(typeof(fmt)=='undefined'){fmt=''}
-                    for (var totsInIter = tempMasterArray[totsTikr].length, totsInTikr = 1; totsInTikr < totsInIter; totsInTikr++) {
-                        summer = (tempMasterArray[totsTikr][totsInTikr]).replace(/,/g, '');
-
-                        sumItAllUp += parseFloat(summer);
-                        if (parseFloat(summer) < 0) { //if current value < 0 then take abs value, comma seperate and put in parens
-                            tempMasterArray[totsTikr][totsInTikr] = "(" + commaSeparate((parseFloat(summer) * -1)) + ")";
-                        }
-						//use blank total for NaN and for ratios
-						if (isNaN(sumItAllUp) || fmt.indexOf('%')>0){
-							sumItAllUp = ''
-						}
-                        if (totsInTikr == (totsInIter - 1)) { //PV FACTOR FIX, totsTikr == 1 represents PV factor row/col
-                            if (totsTikr == 1) {
-                                sumItAllUp = sumItAllUp.toFixed(4);
-								tempMasterArray[totsTikr].push(sumItAllUp); //no commas in PV factor, commaSeparate adds commas to after the decimal place if you let it
-                            } 
-							else {
-                                totsTikr == 0 ? tempMasterArray[totsTikr].push('Totals') : tempMasterArray[totsTikr].push(commaSeparate(sumItAllUp));
-                            }
-                        }
-                    }
-                }
-            }
-            */
-
             var makeHeader = false; //option to disable table header
-			
+
 			//Build each row of the table from the matrix data created from Sense Hypercube columns
 			//----------------------------------------------------------------------------------------
             for (var bldraLen = tempMasterArray.length, bldra = 0; bldra < bldraLen; bldra++) {
                 //Make html table row
                 var qscRowHtml = document.createElement('tr');
                 for (var bldrbLen = tempMasterArray[bldra].length, bldrb = 0; bldrb < bldrbLen; bldrb++) {
-                    //var htmlCellHldr = tempMasterArray[nth].[bldrb];
                     var qscCellHtml = document.createElement('td');
 
                     //Make html table column
                     qscCellHtml.innerHTML = tempMasterArray[bldra][bldrb];
 					if(bldra==0){
 						if(bldrb==0){
-							qscCellHtml.className = "label"+border; 
-							//qscCellHtml.style = "padding-left:5px;";
+							qscCellHtml.className = "label"+border;
 							qscCellHtml.style.paddingLeft = "5px";
 						}
 						else{
-							qscCellHtml.className = "thead"+border; 
+							qscCellHtml.className = "thead"+border;
 						}
-					} 
+					}
 					else {
  						//set indentation only for first column
 						if (bldrb==0){
-							qscCellHtml.className = "label"+border; 
+							qscCellHtml.className = "label"+border;
 							//changes made below for stupid IE11 compatibility
-							//qscCellHtml.style = "padding-left:" + parseInt(parseInt(layout.qHyperCube.qMeasureInfo[bldra-1].myOptions.indentLevel * 10) + parseInt(5)) + "px";
 							qscCellHtml.style.paddingRight = "3px";
 							qscCellHtml.style.paddingLeft = parseInt(parseInt(layout.qHyperCube.qMeasureInfo[bldra-1].myOptions.indentLevel * 10) + parseInt(5)) + "px";
 						}
 						else{
-							qscCellHtml.className = "value"+border; 		
+							qscCellHtml.className = "value"+border;
 							qscCellHtml.style.paddingRight = "2px";
 							qscCellHtml.style.paddingLeft = "5px";
 						}
@@ -421,35 +376,34 @@ define(["jquery"], function($) {
                             qscCellHtml.style.color = layout.negTextColor;
                         }
 					}
-                    qscRowHtml.appendChild(qscCellHtml); 
+                    qscRowHtml.appendChild(qscCellHtml);
                 }
                 qscCellHtml = null;
-				
+
 				//no idea what the next bit is checking for.....
                 if (typeof pliableTable === "undefined" || pliableTable == null) {
                     return;
                 }
-				
+
 				//Set the table row formatting based on measure configuration
 				//----------------------------------------------------------------------
 				if(bldra==0){
-					qscRowHtml.className = "thead"; 
+					qscRowHtml.className = "thead";
 					//changes made below for stupid IE11 compatibility
-					//qscRowHtml.style = "background-color:" + layout.headBackColor + "; font-weight:bold" + "; color:" + layout.headTextColor; 
-					qscRowHtml.style.backgroundColor = layout.headBackColor 
+					qscRowHtml.style.backgroundColor = layout.headBackColor
 					qscRowHtml.style.color = layout.headTextColor
-					qscRowHtml.style.fontWeight = 'bold' 
+					qscRowHtml.style.fontWeight = 'bold'
 				}
 				else{
-					qscRowHtml.className = "qsc-tbl-row-" + bldra; 
-					//set bold text or not 
+					qscRowHtml.className = "qsc-tbl-row-" + bldra;
+					//set bold text or not
 					if(layout.qHyperCube.qMeasureInfo[bldra-1].myOptions.showBold){
 						fontWeight = 'bold'
 					}
 					else{
 						fontWeight = 'normal'
 					}
-					//set italic text or not 
+					//set italic text or not
 					if(layout.qHyperCube.qMeasureInfo[bldra-1].myOptions.showItalic){
 						fontStyle = 'italic'
 					}
@@ -458,24 +412,20 @@ define(["jquery"], function($) {
 					}
 					rowColor = layout.qHyperCube.qMeasureInfo[bldra-1].myOptions.backColor;
 					//changes made below for stupid IE11 compatibility
-					//qscRowHtml.style = "background-color:" + rowColor + "; font-weight:" + fontWeight + "; font-style:" + fontStyle; 
-					qscRowHtml.style.backgroundColor = rowColor 
-					qscRowHtml.style.fontWeight = fontWeight 
-					qscRowHtml.style.fontStyle = fontStyle 
+					qscRowHtml.style.backgroundColor = rowColor
+					qscRowHtml.style.fontWeight = fontWeight
+					qscRowHtml.style.fontStyle = fontStyle
 				}
-					
-				//alert(qscRowHtml.outerHTML)
-                pliableTable.appendChild(qscRowHtml); 
+
+                pliableTable.appendChild(qscRowHtml);
             }
             tempMasterArray = null;
             qscRowHtml = null;
             pliableTable = null;
             qscPaintCounter++;
 
-
             $element.show();
             $('table').show();
-
 
             var suffix = " - Qlik Sense",
                 weAreInSense = document.title.indexOf(suffix, document.title.length - suffix.length) !== -1;
@@ -489,7 +439,5 @@ define(["jquery"], function($) {
 
 			console.log($element[0].innerHTML)
         }
-		
     };
-	
 });
