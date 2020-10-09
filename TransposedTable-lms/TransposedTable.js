@@ -488,6 +488,7 @@ define(["jquery"], function($) {
             }
 
 			console.log($element[0].innerHTML)
+		$('.qv-object-content-container .ng-scope').css({"overflow":"auto"})
         }
 		
     };
